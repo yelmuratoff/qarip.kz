@@ -17,7 +17,7 @@ dependencies:
 
   # Stream
   stream_transform: ^2.1.0
-  rxdart: ^0.27.7
+  rxdart: ^0.28.0
   meta: any
   analyzer: any
 

@@ -57,7 +57,7 @@ dependencies:
   flutter_easyloading: ^3.0.5
   auto_size_text: ^3.0.0
   fluttertoast: ^8.2.8
-  ispect: ^1.9.3-beta.8
+  ispect: ^2.0.8
   iconsax_plus: ^1.0.0
 
   # Others

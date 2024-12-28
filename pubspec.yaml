@@ -89,7 +89,7 @@ dev_dependencies:
   # Codegen
   drift_dev: ^2.18.0
   build_runner: ^2.4.11
-  envied_generator: ^0.5.4
+  envied_generator: ^1.0.0
   go_router_builder: ^2.3.0
 
 flutter:

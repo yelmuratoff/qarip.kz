@@ -1,0 +1,137 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Init bash commands",
+            "type": "shell",
+            "command": [
+                "chmod a+x automation/bash/*"
+            ],
+            "group": {
+                "kind": "none",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run codegen",
+            "type": "shell",
+            "command": [
+                "fvm dart run build_runner build --delete-conflicting-outputs"
+            ],
+            "group": {
+                "kind": "none",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Format",
+            "type": "shell",
+            "command": [
+                "find lib test -name '*.dart' ! -name '*.g.dart' | xargs dart format --fix -l 80"
+            ],
+            "group": {
+                "kind": "none",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run tests",
+            "type": "shell",
+            "command": [
+                "flutter test ."
+            ],
+            "group": {
+                "kind": "none",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Setup",
+            "type": "shell",
+            "command": [
+                "./automation/bash/setup.sh"
+            ],
+            "group": {
+                "kind": "none",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Setup iOS",
+            "type": "shell",
+            "command": [
+                "./automation/bash/setup_ios.sh"
+            ],
+            "group": {
+                "kind": "none",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Build IPA",
+            "type": "shell",
+            "command": [
+                "./automation/bash/build_ipa.sh"
+            ],
+            "group": {
+                "kind": "none",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Build APK",
+            "type": "shell",
+            "command": [
+                "./automation/bash/build_apk.sh"
+            ],
+            "group": {
+                "kind": "none",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Build AppBundle",
+            "type": "shell",
+            "command": [
+                "./automation/bash/build_appbundle.sh"
+            ],
+            "group": {
+                "kind": "none",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Build WEB",
+            "type": "shell",
+            "command": [
+                "./automation/bash/build_web.sh"
+            ],
+            "group": {
+                "kind": "none",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Init Flutterfire",
+            "type": "shell",
+            "command": [
+                "./automation/bash/firebase_init.sh"
+            ],
+            "group": {
+                "kind": "none",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+    ]
+}

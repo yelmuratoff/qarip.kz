@@ -33,6 +33,7 @@ class _SplashScreenState extends State<SplashScreen> {
       fToast.init(context);
       final tokenPair = await SecureStorageManager.getToken();
       await Future<void>.delayed(const Duration(seconds: 1));
+      if (!context.mounted) return;
       if (tokenPair != null && context.mounted) {
         unawaited(
           context.octopus.setState(

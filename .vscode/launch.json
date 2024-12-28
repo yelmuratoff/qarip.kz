@@ -6,8 +6,6 @@
             "request": "launch",
             "type": "dart",
             "args": [
-                "--flavor",
-                "dev",
                 "-t",
                 "lib/main_dev.dart",
             ],
@@ -18,8 +16,6 @@
             "type": "dart",
             "flutterMode": "release",
             "args": [
-                "--flavor",
-                "dev",
                 "-t",
                 "lib/main_dev.dart",
             ],
@@ -29,8 +25,6 @@
             "request": "launch",
             "type": "dart",
             "args": [
-                "--flavor",
-                "prod",
                 "-t",
                 "lib/main.dart",
             ]
@@ -41,8 +35,6 @@
             "type": "dart",
             "flutterMode": "release",
             "args": [
-                "--flavor",
-                "prod",
                 "-t",
                 "lib/main.dart",
             ]

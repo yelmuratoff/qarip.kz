@@ -93,6 +93,8 @@ class RestClientFactory implements AsyncFactory<RestClientBase> {
 
     hook.onInitializing?.call(name);
 
+    ISpect.info('REST Client initialized: ${restClient.dio}');
+
     return restClient;
   }
 

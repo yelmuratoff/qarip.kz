@@ -9,7 +9,7 @@ flavors:
       icon: "assets/images/icon-1024x1024.png"
       firebase:
         config: "firebase/google-services-prod.json"
-         
+
     ios:
       bundleId: "kz.app.template"
       icon: "assets/images/icon-1024x1024.png"
@@ -25,7 +25,7 @@ flavors:
       icon: "assets/images/icon-1024x1024.png"
       firebase:
         config: "firebase/google-services-dev.json"
-       
+
     ios:
       bundleId: "kz.app.template.dev"
       icon: "assets/images/icon-1024x1024.png"

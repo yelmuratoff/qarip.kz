@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:isolate';
 
 import 'package:base_starter/src/core/rest_client/dio_rest_client/rest_client.dart';
 import 'package:meta/meta.dart';
@@ -33,7 +32,7 @@ abstract base class RestClientBase implements RestClient {
   @protected
   @visibleForTesting
   Uri buildUri({required String path, Map<String, Object?>? queryParams}) {
-    final finalPath = p.canonicalize(
+    final finalPath = p.url.canonicalize(
       p.join(baseUri.path, path.startsWith('/') ? path.substring(1) : path),
     );
 
@@ -63,24 +62,12 @@ abstract base class RestClientBase implements RestClient {
             'HTML error': body,
           };
         } else {
-          if (body.length > 1000) {
-            result = await Isolate.run(
-              () => json.decode(body) as Map<String, Object?>,
-            );
-          } else {
-            result = json.decode(body) as Map<String, Object?>;
-          }
+          result = json.decode(body) as Map<String, Object?>;
         }
       } else if (body is Map<String, Object?>) {
         result = body;
       } else if (body is List<int>) {
-        if (body.length > 1000) {
-          result = await Isolate.run(
-            () => _jsonUTF8.decode(body)! as Map<String, Object?>,
-          );
-        } else {
-          result = _jsonUTF8.decode(body)! as Map<String, Object?>;
-        }
+        result = _jsonUTF8.decode(body)! as Map<String, Object?>;
       } else {
         throw WrongResponseTypeException(
           message: 'Unexpected response body type: ${body.runtimeType}',

@@ -15,6 +15,9 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
+  # Core
+  supabase_flutter: ^2.8.2
+
   # Stream
   stream_transform: ^2.1.0
   rxdart: ^0.27.7

@@ -12,7 +12,6 @@ final class AuthRemoteDataSource implements IAuthDataSource {
   @override
   Future<UserDTO> getCurrentUser() async {
     try {
-      print(restClient.baseUri);
       final response = await restClient.get('api/v1/auth/profile');
       return UserDTO.fromJson(response);
     } catch (e) {
@@ -26,7 +25,6 @@ final class AuthRemoteDataSource implements IAuthDataSource {
     required String password,
   }) async {
     try {
-      print(restClient.toString());
       final response = await restClient.post(
         'api/v1/auth/login',
         body: {

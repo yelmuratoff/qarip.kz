@@ -1,4 +1,5 @@
 import 'package:base_starter/src/app/router/enums/root_tabs_enum.dart';
+import 'package:base_starter/src/app/router/routes/router.dart';
 import 'package:base_starter/src/common/utils/extensions/context_extension.dart';
 import 'package:base_starter/src/common/utils/extensions/string_extension.dart';
 import 'package:base_starter/src/core/l10n/localization.dart';
@@ -30,9 +31,19 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => Scaffold(
         backgroundColor: context.theme.colorScheme.surface,
         appBar: AppBar(
-          title: Text(
-            L10n.current.appTitle.capitalize(),
-            style: context.textStyles.s24w700,
+          title: GestureDetector(
+            onTap: () {
+              context.octopus.setState(
+                (state) => state
+                  ..add(
+                    Routes.splash.node(),
+                  ),
+              );
+            },
+            child: Text(
+              L10n.current.appTitle.capitalize(),
+              style: context.textStyles.s24w700,
+            ),
           ),
           centerTitle: false,
         ),

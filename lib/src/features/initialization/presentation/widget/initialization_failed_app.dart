@@ -141,9 +141,11 @@ class _InitializationFailedAppState extends State<InitializationFailedApp> {
         )
       : MaterialApp(
           home: Scaffold(
+            backgroundColor: Colors.white,
             body: Center(
               child: Image.asset(
-                Assets.images.splash.path,
+                Assets.images.qarPIcon.path,
+                width: 250,
               ),
             ),
           ),

@@ -1,5 +1,4 @@
 import 'package:base_starter/src/app/router/enums/root_tabs_enum.dart';
-import 'package:base_starter/src/app/router/routes/router.dart';
 import 'package:base_starter/src/common/utils/extensions/context_extension.dart';
 import 'package:base_starter/src/common/utils/extensions/string_extension.dart';
 import 'package:base_starter/src/core/l10n/localization.dart';
@@ -10,6 +9,7 @@ import 'package:gap/gap.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:ispect/ispect.dart';
 import 'package:octopus/octopus.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomeTab extends StatelessWidget {
   const HomeTab({super.key});
@@ -32,13 +32,33 @@ class HomeScreen extends ConsumerWidget {
         backgroundColor: context.theme.colorScheme.surface,
         appBar: AppBar(
           title: GestureDetector(
-            onTap: () {
-              context.octopus.setState(
-                (state) => state
-                  ..add(
-                    Routes.splash.node(),
-                  ),
-              );
+            onTap: () async {
+              final user =
+                  await Supabase.instance.client.auth.signInAnonymously();
+              print(user);
+              final folders =
+                  await Supabase.instance.client.storage.from('fonts').list();
+              print(folders.map((e) => e.name));
+              final subFolder = await Supabase.instance.client.storage
+                  .from('fonts')
+                  .list(path: 'Accident');
+
+              print(subFolder.map((e) => e.name));
+
+              final file = await Supabase.instance.client.storage
+                  .from('fonts')
+                  .getPublicUrl('Accident/Afolkalips.woff2');
+              print(file);
+              // Toaster.showToast(
+              //   context: context,
+              //   title: L10n.current.appTitle,
+              // );
+              // context.octopus.setState(
+              //   (state) => state
+              //     ..add(
+              //       Routes.splash.node(),
+              //     ),
+              // );
             },
             child: Text(
               L10n.current.appTitle.capitalize(),

@@ -3,7 +3,7 @@ import 'package:base_starter/src/app/router/routes/router.dart';
 import 'package:base_starter/src/common/presentation/widgets/buttons/app_button.dart';
 import 'package:base_starter/src/common/presentation/widgets/dialogs/app_dialogs.dart';
 import 'package:base_starter/src/common/presentation/widgets/dialogs/change_environment.dart';
-import 'package:base_starter/src/common/presentation/widgets/dialogs/toaster.dart';
+import 'package:base_starter/src/common/presentation/widgets/toaster/toaster.dart';
 import 'package:base_starter/src/common/services/page_lifecycle_model.dart';
 import 'package:base_starter/src/common/utils/extensions/context_extension.dart';
 import 'package:base_starter/src/core/l10n/localization.dart';
@@ -50,8 +50,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final versionTextColor = context.theme.colorScheme.onSurface
-      ..withValues(alpha: 0.5);
+    final versionTextColor =
+        context.theme.colorScheme.onSurface.withValues(alpha: 0.5);
     final titleMediumTextStyle = context.textStyles.s18w600.copyWith(
       fontWeight: FontWeight.bold,
     );

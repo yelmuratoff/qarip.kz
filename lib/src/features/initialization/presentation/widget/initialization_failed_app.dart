@@ -17,6 +17,7 @@ import 'package:gap/gap.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:ispect/ispect.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ui/ui.dart';
 
 /// InitializationFailedScreen widget
 class InitializationFailedApp extends StatefulWidget {
@@ -55,7 +56,7 @@ class _InitializationFailedAppState extends State<InitializationFailedApp> {
   bool _isInitialized = false;
 
   /// ISpect fields
-  final _talker = ISpectifyFlutter.init();
+  final ISpectify _iSpectify = ISpectifyFlutter.init();
 
   @override
   void initState() {
@@ -128,7 +129,7 @@ class _InitializationFailedAppState extends State<InitializationFailedApp> {
                     ? _retryInitialization
                     : null,
                 stackTrace: widget.stackTrace,
-                talker: _talker,
+                iSpectify: _iSpectify,
                 themeMode: _settingsState?.appTheme?.mode ?? ThemeMode.system,
                 lightTheme:
                     _settingsState?.appTheme?.lightTheme ?? ThemeData.light(),
@@ -141,10 +142,13 @@ class _InitializationFailedAppState extends State<InitializationFailedApp> {
         )
       : MaterialApp(
           home: Scaffold(
-            backgroundColor: Colors.white,
+            backgroundColor: context.theme.colorScheme.surface,
             body: Center(
               child: Image.asset(
-                Assets.images.qarPIcon.path,
+                context.theme.when(
+                  light: () => Assets.images.iconDark.path,
+                  dark: () => Assets.images.iconLight.path,
+                ),
                 width: 250,
               ),
             ),
@@ -156,7 +160,7 @@ class _View extends StatelessWidget {
   const _View({
     required this.error,
     required this.stackTrace,
-    required this.talker,
+    required this.iSpectify,
     required this.themeMode,
     required this.lightTheme,
     required this.darkTheme,
@@ -166,7 +170,7 @@ class _View extends StatelessWidget {
   final Object error;
   final AsyncCallback? retryInitialization;
   final StackTrace stackTrace;
-  final ISpectify talker;
+  final ISpectify iSpectify;
   final ThemeMode themeMode;
   final ThemeData lightTheme;
   final ThemeData darkTheme;
@@ -202,8 +206,8 @@ class _View extends StatelessWidget {
                   splashRadius: 8,
                   color: context.theme.colorScheme.error,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: context.theme.colorScheme.error
-                      ..withValues(alpha: 0.1),
+                    backgroundColor:
+                        context.theme.colorScheme.error.withValues(alpha: 0.1),
                   ),
                 ),
               ),

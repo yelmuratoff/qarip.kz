@@ -32,7 +32,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 context.octopus.setState(
                   (state) => state
                     ..clear()
-                    ..add(Routes.root.node()),
+                    ..add(Routes.home.node()),
                 ),
               },
             ErrorAuthState() => {

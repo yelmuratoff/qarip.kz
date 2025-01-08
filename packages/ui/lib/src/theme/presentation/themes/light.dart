@@ -8,6 +8,7 @@ final class LightThemeData {
   /// returns a Light `ThemeData` for the app.
   static ThemeData getTheme({required Color seed}) {
     final baseTheme = ThemeData.from(
+      textTheme: Typography().black.apply(fontFamily: 'Gilroy'),
       colorScheme: ColorScheme.light(
         primary: seed,
         secondary: ThemeUtil.adjustColorBrightness(seed, 0.8),

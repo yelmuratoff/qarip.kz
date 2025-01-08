@@ -7,6 +7,7 @@ final class DarkThemeData {
   /// returns a Dark `ThemeData` for the app.
   static ThemeData getTheme({required Color seed}) {
     final baseTheme = ThemeData.from(
+      textTheme: Typography().white.apply(fontFamily: 'Gilroy'),
       colorScheme: ColorScheme.fromSeed(
         primary: seed,
         seedColor: seed,

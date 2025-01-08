@@ -4,21 +4,7 @@ import 'package:base_starter/src/common/utils/extensions/context_extension.dart'
 import 'package:base_starter/src/core/l10n/localization.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
-import 'package:ispect/ispect.dart';
 import 'package:octopus/octopus.dart';
-
-class ProfileTab extends StatelessWidget {
-  const ProfileTab({super.key});
-
-  @override
-  Widget build(BuildContext context) => BucketNavigator(
-        bucket: RootTabsEnum.profile.bucket,
-        transitionDelegate: const DefaultTransitionDelegate<void>(),
-        observers: [
-          ISpectNavigatorObserver(),
-        ],
-      );
-}
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});

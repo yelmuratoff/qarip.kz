@@ -33,28 +33,24 @@ class _SplashScreenState extends State<SplashScreen> {
       }
 
       final tokenPair = await SecureStorageManager.getToken();
-      await Future<void>.delayed(const Duration(seconds: 1));
+      await Future<void>.delayed(const Duration(seconds: 2));
       if (!context.mounted) return;
 
       if (tokenPair != null) {
-        unawaited(
-          context.octopus.setState(
-            (state) => state
-              ..clear()
-              ..add(
-                Routes.root.node(),
-              ),
-          ),
+        await context.octopus.setState(
+          (state) => state
+            ..clear()
+            ..add(
+              Routes.home.node(),
+            ),
         );
       } else {
-        unawaited(
-          context.octopus.setState(
-            (state) => state
-              ..clear()
-              ..add(
-                Routes.auth.node(),
-              ),
-          ),
+        await context.octopus.setState(
+          (state) => state
+            ..clear()
+            ..add(
+              Routes.auth.node(),
+            ),
         );
       }
     });

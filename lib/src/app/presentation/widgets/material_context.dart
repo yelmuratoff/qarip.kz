@@ -1,5 +1,4 @@
 import 'package:base_starter/flavors.dart';
-import 'package:base_starter/src/app/router/guards/tab.dart';
 import 'package:base_starter/src/app/router/routes/router.dart';
 import 'package:base_starter/src/common/presentation/screens/error_router_screen.dart';
 import 'package:base_starter/src/common/presentation/widgets/dialogs/toaster/flutter_toast.dart';
@@ -38,9 +37,6 @@ class _MaterialContextState extends State<MaterialContext> {
       defaultRoute: Routes.splash,
       observers: [
         observer,
-      ],
-      guards: [
-        TabGuard(),
       ],
       onError: (error, stackTrace) {},
       notFound: (ctx, name, arguments) => RouterErrorScreen(

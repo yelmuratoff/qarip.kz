@@ -2,6 +2,7 @@ import 'package:base_starter/flavors.dart';
 import 'package:base_starter/src/common/constants/app_constants.dart';
 import 'package:base_starter/src/common/constants/preferences.dart';
 import 'package:base_starter/src/core/database/src/preferences/app_config_manager.dart';
+import 'package:base_starter/src/core/env/env.dart';
 import 'package:base_starter/src/core/l10n/localization.dart';
 import 'package:base_starter/src/core/rest_client/dio_rest_client/rest_client.dart';
 import 'package:base_starter/src/core/rest_client/dio_rest_client/src/rest_client_dio.dart';
@@ -20,6 +21,7 @@ import 'package:base_starter/src/features/settings/presentation/bloc/settings_bl
 import 'package:ispect/ispect.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Factory that creates an instance of [DependenciesContainer].
 class DependenciesFactory implements AsyncFactory<DependenciesContainer> {
@@ -38,6 +40,10 @@ class DependenciesFactory implements AsyncFactory<DependenciesContainer> {
     await ConfigManagerFactory(
       hook: hook,
       sharedPreferences: sharedPreferences,
+    ).create();
+
+    await SupabaseFactory(
+      hook: hook,
     ).create();
 
     final restClient = await RestClientFactory(
@@ -76,6 +82,29 @@ class DependenciesFactory implements AsyncFactory<DependenciesContainer> {
 
   @override
   String get name => 'Dependencies';
+}
+
+/// A factory that creates an instance of [Supabase].
+class SupabaseFactory implements AsyncFactory<void> {
+  const SupabaseFactory({
+    required this.hook,
+  });
+
+  @override
+  final InitializationHook hook;
+
+  @override
+  Future<void> create() async {
+    await Supabase.initialize(
+      url: Env.supabaseUrl,
+      anonKey: Env.supabaseAnonKey,
+    );
+
+    hook.onInitializing?.call(name);
+  }
+
+  @override
+  String get name => 'Supabase';
 }
 
 /// A factory that creates an instance of [RestClientBase].

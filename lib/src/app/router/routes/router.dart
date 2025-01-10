@@ -32,21 +32,4 @@ enum Routes with OctopusRoute {
             title: node.arguments['title'],
           ),
       };
-
-  // @override
-  // Page<Object?> pageBuilder(
-  //   BuildContext context,
-  //   OctopusState state,
-  //   OctopusNode node,
-  // ) =>
-  //     MaterialPage<Object?>(
-  //       key: createKey(node),
-  //       child: InheritedOctopusRoute(
-  //         node: node,
-  //         child: builder(context, state, node),
-  //       ),
-  //       name: node.name,
-  //       arguments: node.arguments,
-  //       fullscreenDialog: node.name.endsWith('-dialog'),
-  //     );
 }

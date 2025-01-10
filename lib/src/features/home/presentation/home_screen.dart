@@ -2,15 +2,21 @@ import 'package:base_starter/src/app/router/routes/router.dart';
 import 'package:base_starter/src/app/router/widgets/route_wrapper.dart';
 import 'package:base_starter/src/common/presentation/widgets/buttons/app_button.dart';
 import 'package:base_starter/src/common/presentation/widgets/buttons/theme_switcher.dart';
+import 'package:base_starter/src/common/presentation/widgets/toaster/toaster.dart';
 import 'package:base_starter/src/common/utils/extensions/context_extension.dart';
 import 'package:base_starter/src/common/utils/extensions/string_extension.dart';
 import 'package:base_starter/src/core/l10n/localization.dart';
-import 'package:base_starter/src/features/home/presentation/bloc/counter_cubit.dart';
+import 'package:base_starter/src/features/home/bloc/counter_cubit.dart';
+import 'package:base_starter/src/features/home/bloc/download_file/download_file_cubit.dart';
+import 'package:base_starter/src/features/home/bloc/font_categories/font_categories.dart';
+import 'package:base_starter/src/features/home/bloc/font_files/font_files_cubit.dart';
+import 'package:base_starter/src/features/home/controllers/files_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:octopus/octopus.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget implements RouteWrapper {
   const HomeScreen({super.key});
@@ -18,6 +24,9 @@ class HomeScreen extends StatelessWidget implements RouteWrapper {
   @override
   Widget wrappedRoute(BuildContext context) => MultiBlocProvider(
         providers: [
+          ChangeNotifierProvider(
+            create: (context) => FilesController(),
+          ),
           BlocProvider(
             create: (context) => CounterCubit(),
           ),
@@ -34,6 +43,10 @@ class HomeScreen extends StatelessWidget implements RouteWrapper {
             style: context.textStyles.s24w700,
           ),
           centerTitle: false,
+          backgroundColor: context.theme.colorScheme.surface.withValues(
+            alpha: 0.5,
+          ),
+          scrolledUnderElevation: 0,
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 8),
@@ -90,117 +103,181 @@ class HomeScreen extends StatelessWidget implements RouteWrapper {
             ),
             const SliverGap(32),
             SliverToBoxAdapter(
-              child: SizedBox(
-                height: 35,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 10,
-                  separatorBuilder: (context, index) => const Gap(8),
-                  itemBuilder: (context, index) => Padding(
-                    padding: EdgeInsets.only(
-                      left: index == 0 ? 16 : 0,
-                      right: index == 9 ? 16 : 0,
-                    ),
-                    child: ChoiceChip(
-                      label: Text(
-                        'Категория $index',
-                        style: context.textStyles.s14w400.copyWith(
-                          color: context.theme.colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                      selected: false,
-                      side: BorderSide(
-                        color: context.colors.border,
-                      ),
-                      onSelected: (selected) {},
-                      backgroundColor: context.theme.colorScheme.surface,
-                      selectedColor: context.theme.colorScheme.primary,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const SliverGap(16),
-            SliverFillRemaining(
-              hasScrollBody: false,
-              child: Wrap(
-                alignment: WrapAlignment.center,
-                children: List.generate(
-                  3,
-                  (index) {
-                    final isFolder = index.isEven;
-                    return Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: InkWell(
-                        onTap: () {},
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(16),
-                        ),
-                        child: SizedBox.square(
-                          dimension: 150,
-                          child: Ink(
-                            decoration: BoxDecoration(
-                              color: context.theme.colorScheme.surface,
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(16),
+              child: Consumer<FilesController>(
+                builder: (context, controller, child) =>
+                    BlocConsumer<FontCategoriesCubit, FontCategoriesState>(
+                  listener: (context, state) {
+                    if (state is FontCategoriesLoaded) {
+                      controller.selectedCategory =
+                          state.categories.firstOrNull;
+
+                      if (controller.selectedCategory != null) {
+                        context.read<FontFilesCubit>().get(
+                              category: controller.selectedCategory!.name,
+                            );
+                      }
+                    }
+                  },
+                  builder: (context, state) => switch (state) {
+                    FontCategoriesLoaded() => SizedBox(
+                        height: 35,
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: state.categories.length,
+                          separatorBuilder: (context, index) => const Gap(8),
+                          itemBuilder: (context, index) => Padding(
+                            padding: EdgeInsets.only(
+                              left: index == 0 ? 16 : 0,
+                              right: index == 9 ? 16 : 0,
+                            ),
+                            child: ChoiceChip(
+                              label: Text(
+                                state.categories[index].name,
+                                style: context.textStyles.s14w400.copyWith(
+                                  color: context
+                                      .theme.colorScheme.onSurfaceVariant,
+                                ),
                               ),
-                              border: Border.all(
+                              selected: controller.selectedCategory ==
+                                  state.categories[index],
+                              side: BorderSide(
                                 color: context.colors.border,
                               ),
-                            ),
-                            child: Stack(
-                              children: [
-                                Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                      vertical: 4,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: context.theme.colorScheme.primary,
-                                      borderRadius: const BorderRadius.only(
-                                        topLeft: Radius.circular(14),
-                                        bottomRight: Radius.circular(14),
-                                      ),
-                                    ),
-                                    child: Text(
-                                      isFolder ? 'Folder' : 'ttf',
-                                      style:
-                                          context.textStyles.s12w400.copyWith(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Align(
-                                  alignment: Alignment.topRight,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8),
-                                    child: Icon(
-                                      isFolder
-                                          ? IconsaxPlusLinear.arrow_right_3
-                                          : IconsaxPlusLinear.arrow_down_2,
-                                    ),
-                                  ),
-                                ),
-                                Center(
-                                  child: Text(
-                                    'Name $index',
-                                    style: context.textStyles.s16w400.copyWith(
-                                      color: context
-                                          .theme.colorScheme.onSurfaceVariant,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                              onSelected: (selected) {
+                                controller.selectedCategory =
+                                    selected ? state.categories[index] : null;
+                              },
+                              backgroundColor:
+                                  context.theme.colorScheme.surface,
+                              selectedColor: context.theme.colorScheme.primary,
                             ),
                           ),
                         ),
                       ),
-                    );
+                    _ => const SizedBox.shrink(),
                   },
                 ),
+              ),
+            ),
+            const SliverGap(16),
+            Consumer<FilesController>(
+              builder: (context, controller, child) =>
+                  BlocBuilder<FontFilesCubit, FontFilesState>(
+                builder: (context, state) => switch (state) {
+                  FontFilesLoaded() => SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Wrap(
+                        alignment: WrapAlignment.center,
+                        children: List.generate(
+                          state.files.length,
+                          (index) {
+                            final file = state.files[index];
+                            return Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Container(
+                                clipBehavior: Clip.antiAlias,
+                                decoration: BoxDecoration(
+                                  color: context.theme.colorScheme.surface,
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(16),
+                                  ),
+                                  border: Border.all(
+                                    color: context.colors.border,
+                                    strokeAlign: BorderSide.strokeAlignOutside,
+                                  ),
+                                ),
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    onTap: () {
+                                      if (file.isFolder) {
+                                        Toaster.showErrorToast(
+                                          context,
+                                          title: 'Folder is not supported',
+                                        );
+                                      } else {
+                                        context
+                                            .read<DownloadFileCubit>()
+                                            .downloadFile(
+                                              path: file.name,
+                                              category: controller
+                                                  .selectedCategory!.name,
+                                            );
+                                      }
+                                    },
+                                    borderRadius: const BorderRadius.all(
+                                      Radius.circular(16),
+                                    ),
+                                    child: SizedBox.square(
+                                      dimension: 150,
+                                      child: Stack(
+                                        children: [
+                                          Align(
+                                            alignment: Alignment.topLeft,
+                                            child: Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                horizontal: 8,
+                                                vertical: 4,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color: context
+                                                    .theme.colorScheme.primary,
+                                                borderRadius:
+                                                    const BorderRadius.only(
+                                                  bottomRight:
+                                                      Radius.circular(12),
+                                                ),
+                                              ),
+                                              child: Text(
+                                                file.isFolder
+                                                    ? 'Folder'
+                                                    : file.mimeType,
+                                                style: context
+                                                    .textStyles.s12w400
+                                                    .copyWith(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Align(
+                                            alignment: Alignment.topRight,
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(8),
+                                              child: Icon(
+                                                file.isFolder
+                                                    ? IconsaxPlusLinear
+                                                        .arrow_right_3
+                                                    : IconsaxPlusLinear
+                                                        .arrow_down_2,
+                                              ),
+                                            ),
+                                          ),
+                                          Center(
+                                            child: Text(
+                                              file.name,
+                                              textAlign: TextAlign.center,
+                                              style: context.textStyles.s16w400
+                                                  .copyWith(
+                                                color: context.theme.colorScheme
+                                                    .onSurfaceVariant,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  _ => const SliverToBoxAdapter(),
+                },
               ),
             ),
             const SliverGap(16),

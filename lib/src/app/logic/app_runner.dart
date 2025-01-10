@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:base_starter/src/app/presentation/widgets/app.dart';
 import 'package:base_starter/src/common/presentation/widgets/restart_wrapper.dart';
+import 'package:base_starter/src/features/home/bloc/download_file/download_file_cubit.dart';
+import 'package:base_starter/src/features/home/bloc/font_categories/font_categories.dart';
+import 'package:base_starter/src/features/home/bloc/font_files/font_files_cubit.dart';
 import 'package:base_starter/src/features/initialization/logic/composition_root.dart';
 import 'package:base_starter/src/features/initialization/models/initialization_hook.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart' as bloc_concurrency;
@@ -42,6 +45,15 @@ final class AppRunner {
                 ),
                 BlocProvider.value(
                   value: result.dependencies.userCubit,
+                ),
+                BlocProvider(
+                  create: (context) => FontCategoriesCubit()..get(),
+                ),
+                BlocProvider(
+                  create: (context) => FontFilesCubit(),
+                ),
+                BlocProvider(
+                  create: (context) => DownloadFileCubit(),
                 ),
               ],
               child: App(

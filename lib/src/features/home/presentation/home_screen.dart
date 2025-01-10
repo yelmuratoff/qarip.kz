@@ -24,9 +24,6 @@ class HomeScreen extends StatelessWidget implements RouteWrapper {
   @override
   Widget wrappedRoute(BuildContext context) => MultiBlocProvider(
         providers: [
-          ChangeNotifierProvider(
-            create: (context) => FilesController(),
-          ),
           BlocProvider(
             create: (context) => CounterCubit(),
           ),
@@ -191,9 +188,11 @@ class HomeScreen extends StatelessWidget implements RouteWrapper {
                                   child: InkWell(
                                     onTap: () {
                                       if (file.isFolder) {
-                                        Toaster.showErrorToast(
-                                          context,
-                                          title: 'Folder is not supported',
+                                        context.octopus.push(
+                                          Routes.folder,
+                                          arguments: {
+                                            'path': file.name,
+                                          },
                                         );
                                       } else {
                                         context

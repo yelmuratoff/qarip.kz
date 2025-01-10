@@ -1,3 +1,4 @@
+import 'package:base_starter/src/app/presentation/widgets/controllers_wrapper.dart';
 import 'package:base_starter/src/app/presentation/widgets/material_context.dart';
 import 'package:base_starter/src/features/initialization/logic/composition_root.dart';
 import 'package:base_starter/src/features/initialization/presentation/dependencies_scope.dart';
@@ -39,7 +40,9 @@ class _AppState extends State<App> {
         repositories: widget.result.repositories,
         child: SettingsScope(
           settingsBloc: widget.result.dependencies.settingsBloc,
-          child: const MaterialContext(),
+          child: const ControllersScope(
+            child: MaterialContext(),
+          ),
         ),
       );
 }

@@ -28,7 +28,7 @@ enum Routes with OctopusRoute {
       switch (this) {
         Routes.splash => const SplashScreen(),
         Routes.auth => const AuthScreen(),
-        Routes.home => const HomeScreen().wrappedRoute(context),
+        Routes.home => const HomeScreen(),
         Routes.folder => FolderScreen(
             path: node.arguments['path'],
           ),

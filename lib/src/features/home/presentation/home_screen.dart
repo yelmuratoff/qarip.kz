@@ -1,12 +1,11 @@
+import 'dart:async';
+
 import 'package:base_starter/src/app/router/routes/router.dart';
-import 'package:base_starter/src/app/router/widgets/route_wrapper.dart';
 import 'package:base_starter/src/common/presentation/widgets/buttons/app_button.dart';
 import 'package:base_starter/src/common/presentation/widgets/buttons/theme_switcher.dart';
-import 'package:base_starter/src/common/presentation/widgets/toaster/toaster.dart';
 import 'package:base_starter/src/common/utils/extensions/context_extension.dart';
 import 'package:base_starter/src/common/utils/extensions/string_extension.dart';
 import 'package:base_starter/src/core/l10n/localization.dart';
-import 'package:base_starter/src/features/home/bloc/counter_cubit.dart';
 import 'package:base_starter/src/features/home/bloc/download_file/download_file_cubit.dart';
 import 'package:base_starter/src/features/home/bloc/font_categories/font_categories.dart';
 import 'package:base_starter/src/features/home/bloc/font_files/font_files_cubit.dart';
@@ -18,18 +17,46 @@ import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:octopus/octopus.dart';
 import 'package:provider/provider.dart';
 
-class HomeScreen extends StatelessWidget implements RouteWrapper {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget wrappedRoute(BuildContext context) => MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => CounterCubit(),
-          ),
-        ],
-        child: this,
-      );
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final ScrollController _scrollController = ScrollController();
+  Timer? _debounce;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+
+    _debounce = Timer(const Duration(milliseconds: 300), () {
+      // Проверяем, что достигли конца списка
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent - 200) {
+        final selectedCategory =
+            context.read<FilesController>().selectedCategory;
+
+        if (selectedCategory != null) {
+          context.read<FontFilesCubit>().get(category: selectedCategory.name);
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -73,6 +100,7 @@ class HomeScreen extends StatelessWidget implements RouteWrapper {
           ],
         ),
         body: CustomScrollView(
+          controller: _scrollController,
           slivers: [
             const SliverGap(32),
             SliverPadding(
@@ -143,6 +171,14 @@ class HomeScreen extends StatelessWidget implements RouteWrapper {
                               onSelected: (selected) {
                                 controller.selectedCategory =
                                     selected ? state.categories[index] : null;
+
+                                if (controller.selectedCategory != null) {
+                                  context.read<FontFilesCubit>().get(
+                                        category:
+                                            controller.selectedCategory!.name,
+                                        reset: true,
+                                      );
+                                }
                               },
                               backgroundColor:
                                   context.theme.colorScheme.surface,
@@ -161,119 +197,114 @@ class HomeScreen extends StatelessWidget implements RouteWrapper {
               builder: (context, controller, child) =>
                   BlocBuilder<FontFilesCubit, FontFilesState>(
                 builder: (context, state) => switch (state) {
-                  FontFilesLoaded() => SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: Wrap(
-                        alignment: WrapAlignment.center,
-                        children: List.generate(
-                          state.files.length,
-                          (index) {
-                            final file = state.files[index];
-                            return Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: Container(
-                                clipBehavior: Clip.antiAlias,
-                                decoration: BoxDecoration(
-                                  color: context.theme.colorScheme.surface,
-                                  borderRadius: const BorderRadius.all(
-                                    Radius.circular(16),
-                                  ),
-                                  border: Border.all(
-                                    color: context.colors.border,
-                                    strokeAlign: BorderSide.strokeAlignOutside,
-                                  ),
-                                ),
-                                child: Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                    onTap: () {
-                                      if (file.isFolder) {
-                                        context.octopus.push(
-                                          Routes.folder,
-                                          arguments: {
-                                            'path': file.name,
-                                          },
+                  FontFilesLoaded() => SliverList.builder(
+                      itemCount: state.files.length,
+                      itemBuilder: (context, index) {
+                        final file = state.files[index];
+                        return Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Container(
+                            height: 80,
+                            clipBehavior: Clip.antiAlias,
+                            decoration: BoxDecoration(
+                              color: context.theme.colorScheme.surface,
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(16),
+                              ),
+                              border: Border.all(
+                                color: context.colors.border,
+                                strokeAlign: BorderSide.strokeAlignOutside,
+                              ),
+                            ),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: () {
+                                  if (file.isFolder) {
+                                    context.octopus.push(
+                                      Routes.folder,
+                                      arguments: {
+                                        'path': file.name,
+                                      },
+                                    );
+                                  } else {
+                                    context
+                                        .read<DownloadFileCubit>()
+                                        .downloadFile(
+                                          path: file.name,
+                                          category:
+                                              controller.selectedCategory!.name,
                                         );
-                                      } else {
-                                        context
-                                            .read<DownloadFileCubit>()
-                                            .downloadFile(
-                                              path: file.name,
-                                              category: controller
-                                                  .selectedCategory!.name,
-                                            );
-                                      }
-                                    },
-                                    borderRadius: const BorderRadius.all(
-                                      Radius.circular(16),
-                                    ),
-                                    child: SizedBox.square(
-                                      dimension: 150,
-                                      child: Stack(
-                                        children: [
-                                          Align(
-                                            alignment: Alignment.topLeft,
-                                            child: Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                horizontal: 8,
-                                                vertical: 4,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                color: context
-                                                    .theme.colorScheme.primary,
-                                                borderRadius:
-                                                    const BorderRadius.only(
-                                                  bottomRight:
-                                                      Radius.circular(12),
-                                                ),
-                                              ),
-                                              child: Text(
-                                                file.isFolder
-                                                    ? 'Folder'
-                                                    : file.mimeType,
-                                                style: context
-                                                    .textStyles.s12w400
-                                                    .copyWith(
-                                                  color: Colors.white,
-                                                ),
-                                              ),
+                                  }
+                                },
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(16),
+                                ),
+                                child: SizedBox.square(
+                                  dimension: 150,
+                                  child: Stack(
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                            vertical: 4,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: context
+                                                .theme.colorScheme.primary,
+                                            borderRadius:
+                                                const BorderRadius.only(
+                                              bottomRight: Radius.circular(12),
                                             ),
                                           ),
-                                          Align(
-                                            alignment: Alignment.topRight,
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(8),
-                                              child: Icon(
-                                                file.isFolder
-                                                    ? IconsaxPlusLinear
-                                                        .arrow_right_3
-                                                    : IconsaxPlusLinear
-                                                        .arrow_down_2,
-                                              ),
+                                          child: Text(
+                                            file.isFolder
+                                                ? 'Folder'
+                                                : file.mimeType,
+                                            style: context.textStyles.s12w400
+                                                .copyWith(
+                                              color: Colors.white,
                                             ),
                                           ),
-                                          Center(
-                                            child: Text(
-                                              file.name,
-                                              textAlign: TextAlign.center,
-                                              style: context.textStyles.s16w400
-                                                  .copyWith(
-                                                color: context.theme.colorScheme
-                                                    .onSurfaceVariant,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                                        ),
                                       ),
-                                    ),
+                                      Align(
+                                        alignment: Alignment.topRight,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8),
+                                          child: Icon(
+                                            file.isFolder
+                                                ? IconsaxPlusLinear
+                                                    .arrow_right_3
+                                                : IconsaxPlusLinear
+                                                    .arrow_down_2,
+                                          ),
+                                        ),
+                                      ),
+                                      Center(
+                                        child: Text(
+                                          file.name,
+                                          textAlign: TextAlign.center,
+                                          style: context.textStyles.s16w400
+                                              .copyWith(
+                                            fontFamily: file.isFolder
+                                                ? null
+                                                : file.name,
+                                            color: context.theme.colorScheme
+                                                .onSurfaceVariant,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
-                            );
-                          },
-                        ),
-                      ),
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   _ => const SliverToBoxAdapter(),
                 },

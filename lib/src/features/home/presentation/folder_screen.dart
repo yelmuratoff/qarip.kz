@@ -12,7 +12,7 @@ class FolderScreen extends StatelessWidget {
         appBar: AppBar(
           title: Text(path ?? ''),
         ),
-        body: Center(
+        body: const Center(
           child: Text('Folder content'),
         ),
       );

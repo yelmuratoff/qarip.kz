@@ -1,13 +1,9 @@
 import 'package:base_starter/src/app/model/app_theme.dart';
-import 'package:base_starter/src/app/router/routes/router.dart';
-import 'package:base_starter/src/common/presentation/widgets/buttons/app_button.dart';
-import 'package:base_starter/src/common/presentation/widgets/dialogs/app_dialogs.dart';
 import 'package:base_starter/src/common/presentation/widgets/dialogs/change_environment.dart';
 import 'package:base_starter/src/common/presentation/widgets/toaster/toaster.dart';
 import 'package:base_starter/src/common/services/page_lifecycle_model.dart';
 import 'package:base_starter/src/common/utils/extensions/context_extension.dart';
 import 'package:base_starter/src/core/l10n/localization.dart';
-import 'package:base_starter/src/features/auth/presentation/bloc/auth/auth_bloc.dart';
 import 'package:base_starter/src/features/settings/presentation/bloc/settings_bloc.dart';
 import 'package:base_starter/src/features/settings/presentation/controller/settings_model.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +11,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:ispect/ispect.dart';
-import 'package:octopus/octopus.dart';
 
 part 'controller/settings_scope.dart';
 part 'widget/app_version.dart';
@@ -155,31 +150,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     }
                   },
                   versionTextColor: versionTextColor,
-                ),
-                const Gap(24),
-                BlocListener<AuthBloc, AuthState>(
-                  listener: (context, state) => switch (state) {
-                    LoadingAuthState() => AppDialogs.showLoader(
-                        context,
-                        title: L10n.current.loading,
-                      ),
-                    InitialAuthState() => {
-                        AppDialogs.dismiss(),
-                        context.octopus.setState(
-                          (state) => state
-                            ..clear()
-                            ..add(Routes.auth.node()),
-                        ),
-                      },
-                    _ => AppDialogs.dismiss(),
-                  },
-                  child: AppButton(
-                    onPressed: () {
-                      context.dependencies.authBloc
-                          .add(const LogoutAuthEvent());
-                    },
-                    text: L10n.current.logout,
-                  ),
                 ),
                 const Gap(32),
               ],

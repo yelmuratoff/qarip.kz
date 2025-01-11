@@ -2,10 +2,9 @@ import 'package:base_starter/flavors.dart';
 import 'package:base_starter/src/app/router/routes/router.dart';
 import 'package:base_starter/src/common/presentation/screens/error_router_screen.dart';
 import 'package:base_starter/src/common/presentation/widgets/dialogs/toaster/flutter_toast.dart';
-import 'package:base_starter/src/common/utils/extensions/context_extension.dart';
 import 'package:base_starter/src/common/utils/utils.dart';
 import 'package:base_starter/src/core/l10n/localization.dart';
-import 'package:base_starter/src/features/auth/presentation/bloc/user/user_cubit.dart';
+
 import 'package:base_starter/src/features/settings/presentation/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -48,8 +47,6 @@ class _MaterialContextState extends State<MaterialContext> {
         .map((key, value) => MapEntry(key, value.toString()));
 
     ISpect.route('📜 Routes:\n${AppUtils.formatPrettyJson(routes)}');
-
-    context.blocRead<UserCubit>().get();
   }
 
   @override
@@ -96,14 +93,14 @@ class _MaterialContextState extends State<MaterialContext> {
 
           child = FToastBuilder()(context, child);
 
-          if (F.isDev) {
-            child = Banner(
-              message: F.name,
-              location: BannerLocation.topStart,
-              color: Colors.red,
-              child: child,
-            );
-          }
+          // if (F.isDev) {
+          //   child = Banner(
+          //     message: F.name,
+          //     location: BannerLocation.topStart,
+          //     color: Colors.red,
+          //     child: child,
+          //   );
+          // }
           return child;
         },
       ),

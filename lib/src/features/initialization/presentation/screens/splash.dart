@@ -32,27 +32,27 @@ class _SplashScreenState extends State<SplashScreen> {
         await AppConfigManager.instance.setFirstRun(value: false);
       }
 
-      final tokenPair = await SecureStorageManager.getToken();
-      await Future<void>.delayed(const Duration(seconds: 2));
-      if (!context.mounted) return;
+      // final tokenPair = await SecureStorageManager.getToken();
+      // await Future<void>.delayed(const Duration(seconds: 2));
+      // if (!context.mounted) return;
 
-      if (tokenPair != null) {
-        await context.octopus.setState(
-          (state) => state
-            ..clear()
-            ..add(
-              Routes.home.node(),
-            ),
-        );
-      } else {
-        await context.octopus.setState(
-          (state) => state
-            ..clear()
-            ..add(
-              Routes.auth.node(),
-            ),
-        );
-      }
+      // if (tokenPair != null) {
+      await context.octopus.setState(
+        (state) => state
+          ..clear()
+          ..add(
+            Routes.home.node(),
+          ),
+      );
+      // } else {
+      //   await context.octopus.setState(
+      //     (state) => state
+      //       ..clear()
+      //       ..add(
+      //         Routes.auth.node(),
+      //       ),
+      //   );
+      // }
     });
   }
 

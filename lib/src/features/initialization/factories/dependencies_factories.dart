@@ -6,9 +6,6 @@ import 'package:base_starter/src/core/env/env.dart';
 import 'package:base_starter/src/core/l10n/localization.dart';
 import 'package:base_starter/src/core/rest_client/dio_rest_client/rest_client.dart';
 import 'package:base_starter/src/core/rest_client/dio_rest_client/src/rest_client_dio.dart';
-import 'package:base_starter/src/features/auth/presentation/bloc/auth/auth_bloc.dart';
-import 'package:base_starter/src/features/auth/presentation/bloc/user/user_cubit.dart';
-import 'package:base_starter/src/features/initialization/factories/repositories_factories.dart';
 import 'package:base_starter/src/features/initialization/logic/composition_root.dart';
 import 'package:base_starter/src/features/initialization/models/dependencies.dart';
 import 'package:base_starter/src/features/initialization/models/initialization_hook.dart';
@@ -50,21 +47,6 @@ class DependenciesFactory implements AsyncFactory<DependenciesContainer> {
       hook: hook,
     ).create();
 
-    final repositories = await RepositoriesFactory(
-      restClient: restClient,
-      sharedPreferences: sharedPreferences,
-      hook: hook,
-    ).create();
-
-    final authBloc = AuthBloc(
-      repository: repositories.authRepository,
-    );
-
-    final userCubit = UserCubit(
-      remoteUserRepository: repositories.remoteUserRepository,
-      localUserRepository: repositories.localUserRepository,
-    );
-
     final settingsBloc = await SettingsBlocFactory(
       sharedPreferences: sharedPreferences,
       hook: hook,
@@ -74,8 +56,6 @@ class DependenciesFactory implements AsyncFactory<DependenciesContainer> {
       packageInfo: packageInfo,
       sharedPreferences: sharedPreferences,
       restClient: restClient,
-      authBloc: authBloc,
-      userCubit: userCubit,
       settingsBloc: settingsBloc,
     );
   }

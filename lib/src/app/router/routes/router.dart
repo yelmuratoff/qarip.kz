@@ -1,7 +1,6 @@
-import 'package:base_starter/src/features/auth/presentation/auth_screen.dart';
 import 'package:base_starter/src/features/home/presentation/folder_screen.dart';
 import 'package:base_starter/src/features/home/presentation/home_screen.dart';
-import 'package:base_starter/src/features/initialization/presentation/page/splash.dart';
+import 'package:base_starter/src/features/initialization/presentation/screens/splash.dart';
 import 'package:base_starter/src/features/profile/presentation/profile_screen.dart';
 import 'package:base_starter/src/features/settings/presentation/settings_screen.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +8,6 @@ import 'package:octopus/octopus.dart';
 
 enum Routes with OctopusRoute {
   splash('splash', title: 'Splash'),
-  auth('auth', title: 'Auth'),
   home('home', title: 'Home'),
   folder('folder', title: 'Folder'),
   profile('profile', title: 'Profile'),
@@ -27,10 +25,14 @@ enum Routes with OctopusRoute {
   Widget builder(BuildContext context, OctopusState state, OctopusNode node) =>
       switch (this) {
         Routes.splash => const SplashScreen(),
-        Routes.auth => const AuthScreen(),
-        Routes.home => const HomeScreen(),
+        Routes.home => const HomeScreen().wrappedRoute(
+            context,
+          ),
         Routes.folder => FolderScreen(
+            category: node.arguments['category'],
             path: node.arguments['path'],
+          ).wrappedRoute(
+            context,
           ),
         Routes.profile => const ProfileScreen(),
         Routes.settings => SettingsScreen(

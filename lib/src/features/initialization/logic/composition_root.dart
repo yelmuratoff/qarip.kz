@@ -35,6 +35,7 @@ final class CompositionRoot {
     // initialize repositories
     final repositories = await RepositoriesFactory(
       hook: hook,
+      prefs: dependencies.sharedPreferences,
     ).create();
 
     stopwatch.stop();

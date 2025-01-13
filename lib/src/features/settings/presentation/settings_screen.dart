@@ -1,4 +1,5 @@
 import 'package:base_starter/src/app/model/app_theme.dart';
+import 'package:base_starter/src/common/presentation/widgets/buttons/app_button.dart';
 import 'package:base_starter/src/common/presentation/widgets/dialogs/change_environment.dart';
 import 'package:base_starter/src/common/presentation/widgets/toaster/toaster.dart';
 import 'package:base_starter/src/common/services/page_lifecycle_model.dart';
@@ -8,6 +9,7 @@ import 'package:base_starter/src/features/settings/presentation/bloc/settings_bl
 import 'package:base_starter/src/features/settings/presentation/controller/settings_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:gap/gap.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:ispect/ispect.dart';
@@ -131,6 +133,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
+                AppButton(
+                  onPressed: () {
+                    final cacheManager = DefaultCacheManager()..emptyCache();
+                    cacheManager.store.emptyCache();
+                    cacheManager.store.emptyMemoryCache();
+                  },
+                  text: 'Clear cache',
+                ),
+                const Gap(32),
                 _AppVersionBody(
                   onTapAppVersion: () async {
                     _model.tapNumber++;

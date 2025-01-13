@@ -1,18 +1,23 @@
 import 'dart:async';
 
-import 'package:base_starter/src/common/services/cache/cache_fonts.dart';
+import 'package:base_starter/src/common/services/cache/cache_service.dart';
 import 'package:base_starter/src/features/home/data/models/pagination_files.dart';
 import 'package:base_starter/src/features/home/data/models/storage_folder.dart';
 import 'package:base_starter/src/features/home/domain/drive_repository.dart';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
-
 import 'package:path/path.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 final class DriveRepository implements IDriveRepository {
-  const DriveRepository();
+  const DriveRepository({
+    required this.prefs,
+  });
+
+  final SharedPreferences prefs;
 
   @override
   Future<PaginationFiles> getFiles({
@@ -30,14 +35,32 @@ final class DriveRepository implements IDriveRepository {
       //
       // <--- Cache --->
       //
-      for (final file in pagination.items) {
-        final bodyBytes = await file.getDownloadURL();
+      // for (final file in pagination.items) {
+      //   final uint8List = await file.getData();
 
+      //   final byteData = ByteData.sublistView(uint8List!);
+
+      //   final fontLoader = FontLoader(withoutExtension(file.name))
+      //     ..addFont(Future.value(byteData));
+      //   await fontLoader.load();
+      // }
+
+      final fontCacheManager = FontCacheManager();
+
+      for (final file in pagination.items) {
+        // fontCacheService.loadFontSync(withoutExtension(file.name), () async {
+        //   final uint8List = await file.getData();
+        //   if (uint8List == null) {
+        //     throw Exception("Unable to load data for file: ${file.name}");
+        //   }
+        //   return uint8List;
+        // });
+        final url = await file.getDownloadURL();
         unawaited(
-          DynamicCachedFonts.fromFirebase(
-            fontFamily: withoutExtension(file.name),
-            bucketUrl: bodyBytes,
-          ).load(),
+          fontCacheManager.loadFont(
+            url,
+            withoutExtension(file.name),
+          ),
         );
       }
 

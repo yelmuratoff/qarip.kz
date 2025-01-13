@@ -8,4 +8,8 @@ abstract interface class IDriveRepository {
   });
 
   Future<List<StorageFile>> getCategories();
+
+  Future<void> downloadFont(
+    String path,
+  );
 }

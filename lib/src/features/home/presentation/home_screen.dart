@@ -1,8 +1,10 @@
+import 'package:base_starter/src/app/router/routes/router.dart';
 import 'package:base_starter/src/app/router/widgets/route_wrapper.dart';
 import 'package:base_starter/src/common/presentation/widgets/buttons/app_button.dart';
 import 'package:base_starter/src/common/presentation/widgets/dialogs/app_dialogs.dart';
 import 'package:base_starter/src/common/utils/extensions/context_extension.dart';
 import 'package:base_starter/src/core/l10n/localization.dart';
+import 'package:base_starter/src/features/home/bloc/download_file/download_file_cubit.dart';
 import 'package:base_starter/src/features/home/bloc/drive_files/drive_files_bloc.dart';
 import 'package:base_starter/src/features/home/bloc/font_categories/font_categories.dart';
 import 'package:base_starter/src/features/home/bloc/font_files/font_files_cubit.dart';
@@ -13,6 +15,7 @@ import 'package:base_starter/src/features/home/presentation/widgets/files_sliver
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:octopus/octopus.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget implements RouteWrapper {
@@ -37,6 +40,11 @@ class HomeScreen extends StatefulWidget implements RouteWrapper {
           BlocProvider(
             create: (context) => DriveFilesBloc(
               driveRepository: context.repositories.driveRepository,
+            ),
+          ),
+          BlocProvider(
+            create: (_) => DownloadFileCubit(
+              repository: context.repositories.driveRepository,
             ),
           ),
         ],
@@ -127,6 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         onSelected: ({selectedFile}) {
                           controller.selectedCategory = selectedFile;
                           if (selectedFile != null) {
+                            controller.clearFiles();
                             context.read<FontFilesBloc>().add(
                                   FetchFontFilesEvent(
                                     path: selectedFile.name ?? '',
@@ -163,19 +172,20 @@ class _HomeScreenState extends State<HomeScreen> {
                 builder: (context, state) => FilesSliverList(
                   files: controller.files,
                   onTap: ({required file, required path}) {
-                    // if (file.isFolder) {
-                    //   context.octopus.push(
-                    //     Routes.folder,
-                    //     arguments: {
-                    //       'path': file.name ?? '',
-                    //       'category':controller.selectedCategory?.name ?? '',
-                    //     },
-                    //   );
-                    // } else {
-                    //   context.read<DownloadFileCubit>().downloadFile(
-                    //         id: file.id ?? '',
-                    //       );
-                    // }
+                    if (file.isFolder) {
+                      context.octopus.push(
+                        Routes.folder,
+                        arguments: {
+                          'path': Uri.encodeComponent(file.fullPath ?? ''),
+                        },
+                      );
+                    } else {
+                      if (file.fullPath != null) {
+                        context.read<DownloadFileCubit>().downloadFile(
+                              path: file.fullPath!,
+                            );
+                      }
+                    }
                   },
                 ),
               ),
@@ -186,9 +196,9 @@ class _HomeScreenState extends State<HomeScreen> {
             const SliverGap(16),
             Consumer<FilesController>(
               builder: (context, controller, child) =>
-                  BlocBuilder<DriveFilesBloc, DriveFilesState>(
+                  BlocBuilder<FontFilesBloc, FontFilesState>(
                 builder: (context, state) => switch (state) {
-                  DriveFilesLoaded() => state.pagination.hasMore
+                  FontFilesLoaded() => state.hasMore
                       ? SliverToBoxAdapter(
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -196,13 +206,13 @@ class _HomeScreenState extends State<HomeScreen> {
                               height: 50,
                               child: AppButton(
                                 onPressed: () {
-                                  // _filesBloc.add(
-                                  //   LoadDriveFiles(
-                                  //     id: '',
-                                  //     pageToken:
-                                  // state.pagination.nextPageToken,
-                                  //   ),
-                                  // );
+                                  context.read<FontFilesBloc>().add(
+                                        FetchFontFilesEvent(
+                                          path: controller
+                                              .selectedCategory!.fullPath!,
+                                          pageToken: state.nextPageToken,
+                                        ),
+                                      );
                                 },
                                 text: L10n.current.showMore,
                                 textColor: Colors.white,

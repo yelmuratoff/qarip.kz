@@ -1,8 +1,14 @@
+import 'dart:async';
+
 import 'package:base_starter/src/features/home/data/models/pagination_files.dart';
 import 'package:base_starter/src/features/home/data/models/storage_folder.dart';
 import 'package:base_starter/src/features/home/domain/drive_repository.dart';
+import 'package:dynamic_cached_fonts/dynamic_cached_fonts.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
+
+import 'package:path/path.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 final class DriveRepository implements IDriveRepository {
   const DriveRepository();
@@ -20,6 +26,23 @@ final class DriveRepository implements IDriveRepository {
             ),
           );
 
+      //
+      // <--- Cache --->
+      //
+      for (final file in pagination.items) {
+        final bodyBytes = await file.getDownloadURL();
+
+        unawaited(
+          DynamicCachedFonts.fromFirebase(
+            fontFamily: withoutExtension(file.name),
+            bucketUrl: bodyBytes,
+          ).load(),
+        );
+      }
+
+      //
+      // <--- Parse --->
+      //
       final files = await compute(
         _parseFiles,
         pagination,
@@ -35,50 +58,24 @@ final class DriveRepository implements IDriveRepository {
     }
   }
 
-  static List<StorageFile> _parseFiles(ListResult files) =>
-      files.items.map(StorageFile.fromReference).toList();
+  static List<StorageFile> _parseFiles(ListResult files) => [
+        ...files.items.map(StorageFile.fromReference),
+        ...files.prefixes.map(StorageFile.fromReference),
+      ];
 
-  // Future<void> _loadFonts(List<File> files) async {
-  //   for (final file in files) {
-  //     if (isFont(file.mimeType)) {
-  //       await DynamicCachedFonts(
-  //         fontFamily: file.name ?? '',
-  //         url:
-  //             'https://www.googleapis.com/drive/v3/files/${file.id}?alt=media&source=downloadUrl&key=${Env.apiKey}',
-  //       ).load();
-  //       // final media = await _authClient.get(
-  //       //   Uri.parse(
-  //       //     'https://www.googleapis.com/drive/v3/files/${file.id}?alt=media&source=downloadUrl',
-  //       //   ),
-  //       // );
-
-  //       // final byteData = ByteData.sublistView(media.bodyBytes);
-
-  //       // final fontLoader = FontLoader(file.name ?? '')
-  //       //   ..addFont(Future.value(byteData));
-  //       // await fontLoader.load();
-  //     }
-  //   }
-  // }
-
+  @override
   Future<void> downloadFont(
-    String id,
-    String mimeType,
+    String path,
   ) async {
     try {
-      // await _driveApi.files.export(
-      //   id,
-      //   mimeType,
-      // );
+      final storageRef = FirebaseStorage.instance.ref(path);
+      final url = await storageRef.getDownloadURL();
+
+      await launchUrl(Uri.parse(url));
     } catch (e) {
       rethrow;
     }
   }
-
-  static bool isFont(String? mimeType) => switch (mimeType) {
-        'font/ttf' || 'font/otf' || 'font/woff' || 'font/woff2' => true,
-        _ => false,
-      };
 
   @override
   Future<List<StorageFile>> getCategories() async {

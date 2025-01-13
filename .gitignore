@@ -60,6 +60,7 @@ unlinked_spec.ds
 .firebaserc
 firebase.json
 firebase_options.dart
+.firebase
 
 # Android related
 **/android/**/gradle-wrapper.jar

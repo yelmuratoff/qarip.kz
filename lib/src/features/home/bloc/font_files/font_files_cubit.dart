@@ -38,6 +38,8 @@ class FontFilesBloc extends Bloc<FontFilesEvent, FontFilesState> {
       emit(
         FontFilesLoaded(
           files: files.files,
+          hasMore: files.hasMore,
+          nextPageToken: files.nextPageToken,
         ),
       );
     } catch (e, st) {

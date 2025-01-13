@@ -46,7 +46,9 @@ final class AppRunner {
                   )..get(),
                 ),
                 BlocProvider(
-                  create: (context) => DownloadFileCubit(),
+                  create: (context) => DownloadFileCubit(
+                    repository: context.repositories.driveRepository,
+                  ),
                 ),
               ],
               child: App(

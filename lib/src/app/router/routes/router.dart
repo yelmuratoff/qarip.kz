@@ -1,3 +1,4 @@
+
 import 'package:base_starter/src/features/home/presentation/folder_screen.dart';
 import 'package:base_starter/src/features/home/presentation/home_screen.dart';
 import 'package:base_starter/src/features/initialization/presentation/screens/splash.dart';
@@ -29,8 +30,7 @@ enum Routes with OctopusRoute {
             context,
           ),
         Routes.folder => FolderScreen(
-            category: node.arguments['category'],
-            path: node.arguments['path'],
+            path: Uri.decodeComponent(node.arguments['path'] ?? ''),
           ).wrappedRoute(
             context,
           ),

@@ -15,11 +15,15 @@ final class FontFilesLoading extends FontFilesState {
 final class FontFilesLoaded extends FontFilesState with EquatableMixin {
   const FontFilesLoaded({
     required this.files,
+    required this.hasMore,
+    required this.nextPageToken,
   });
   final List<StorageFile> files;
+  final String? nextPageToken;
+  final bool hasMore;
 
   @override
-  List<Object?> get props => [files];
+  List<Object?> get props => [files, hasMore, nextPageToken];
 }
 
 final class FontFilesError extends FontFilesState with EquatableMixin {

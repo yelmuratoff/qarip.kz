@@ -2,6 +2,7 @@ import 'package:base_starter/flavors.dart';
 import 'package:base_starter/src/app/router/routes/router.dart';
 import 'package:base_starter/src/common/presentation/screens/error_router_screen.dart';
 import 'package:base_starter/src/common/presentation/widgets/dialogs/toaster/flutter_toast.dart';
+import 'package:base_starter/src/common/presentation/widgets/toaster/toaster.dart';
 import 'package:base_starter/src/common/utils/utils.dart';
 import 'package:base_starter/src/core/l10n/localization.dart';
 
@@ -37,7 +38,17 @@ class _MaterialContextState extends State<MaterialContext> {
       observers: [
         observer,
       ],
-      onError: (error, stackTrace) {},
+      onError: (error, stackTrace) {
+        ISpect.handle(
+          exception: error,
+          stackTrace: stackTrace,
+        );
+
+        Toaster.showErrorToast(
+          context,
+          title: error.toString(),
+        );
+      },
       notFound: (ctx, name, arguments) => RouterErrorScreen(
         error: 'Route not found: $name with arguments: $arguments',
       ),

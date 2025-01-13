@@ -1,4 +1,5 @@
 import 'package:base_starter/src/common/utils/extensions/context_extension.dart';
+import 'package:base_starter/src/core/l10n/localization.dart';
 import 'package:base_starter/src/features/home/data/models/storage_folder.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
@@ -66,25 +67,21 @@ class FilesSliverList extends StatelessWidget {
                               ),
                             ),
                             child: Text(
-                              'Folder',
-                              // file.isFolder
-                              //     ? L10n.current.folder
-                              //     : file.mimeType ?? '',
+                              file.mimeType ?? L10n.current.folder,
                               style: context.textStyles.s12w400.copyWith(
                                 color: Colors.white,
                               ),
                             ),
                           ),
                         ),
-                        const Align(
+                        Align(
                           alignment: Alignment.topRight,
                           child: Padding(
-                            padding: EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(8),
                             child: Icon(
-                              // file.isFolder
-                              //     ? IconsaxPlusLinear.arrow_right_3
-                              //     : IconsaxPlusLinear.arrow_down_2,
-                              IconsaxPlusLinear.arrow_right_3,
+                              file.isFolder
+                                  ? IconsaxPlusLinear.arrow_right_3
+                                  : IconsaxPlusLinear.arrow_down_2,
                             ),
                           ),
                         ),
@@ -93,8 +90,8 @@ class FilesSliverList extends StatelessWidget {
                             file.name ?? '',
                             textAlign: TextAlign.center,
                             style: context.textStyles.s16w400.copyWith(
-                              // fontFamily: file.isFolder ? null : file.name,
-
+                              fontFamily:
+                                  file.isFolder ? null : file.withoutExtension,
                               color: context.theme.colorScheme.onSurfaceVariant,
                             ),
                           ),

@@ -1,20 +1,23 @@
+import 'package:base_starter/src/features/home/domain/drive_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 part 'download_file_state.dart';
 
 class DownloadFileCubit extends Cubit<DownloadFileState> {
-  DownloadFileCubit() : super(const DownloadFileInitial());
+  DownloadFileCubit({
+    required IDriveRepository repository,
+  })  : _driveRepository = repository,
+        super(const DownloadFileInitial());
+
+  final IDriveRepository _driveRepository;
 
   Future<void> downloadFile({
-    required String id,
+    required String path,
   }) async {
     emit(const DownloadFileLoading());
     try {
-      // final url = Supabase.instance.client.storage
-      //     .from('fonts')
-      //     .getPublicUrl('$category/$path');
-      // await launchUrl(Uri.parse(url));
+      await _driveRepository.downloadFont(path);
       emit(const DownloadFileSuccess());
     } catch (e) {
       emit(DownloadFileError(error: e.toString()));

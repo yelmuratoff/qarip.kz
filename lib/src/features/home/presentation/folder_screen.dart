@@ -1,15 +1,12 @@
-import 'package:base_starter/src/app/router/routes/router.dart';
 import 'package:base_starter/src/app/router/widgets/route_wrapper.dart';
 import 'package:base_starter/src/common/presentation/widgets/dialogs/app_dialogs.dart';
 import 'package:base_starter/src/common/utils/extensions/context_extension.dart';
-import 'package:base_starter/src/features/home/bloc/download_file/download_file_cubit.dart';
 import 'package:base_starter/src/features/home/bloc/font_files/font_files_cubit.dart';
 import 'package:base_starter/src/features/home/controllers/files_controller.dart';
-import 'package:base_starter/src/features/home/presentation/home_screen.dart';
+import 'package:base_starter/src/features/home/presentation/widgets/files_sliver_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
-import 'package:octopus/octopus.dart';
 import 'package:provider/provider.dart';
 
 class FolderScreen extends StatefulWidget implements RouteWrapper {
@@ -26,7 +23,9 @@ class FolderScreen extends StatefulWidget implements RouteWrapper {
 
   @override
   Widget wrappedRoute(BuildContext context) => BlocProvider(
-        create: (_) => FontFilesBloc(),
+        create: (_) => FontFilesBloc(
+          repository: context.repositories.driveRepository,
+        ),
         child: this,
       );
 }
@@ -73,17 +72,16 @@ class _FolderScreenState extends State<FolderScreen> {
                   FontFilesLoaded() => FilesSliverList(
                       files: state.files,
                       onTap: ({required file, required path}) {
-                        if (file.isFolder) {
-                          context.octopus.push(
-                            Routes.folder,
-                            arguments: {'path': file.name},
-                          );
-                        } else {
-                          context.read<DownloadFileCubit>().downloadFile(
-                                path: file.name,
-                                category: controller.selectedCategory!.name,
-                              );
-                        }
+                        // if (file.isFolder) {
+                        //   context.octopus.push(
+                        //     Routes.folder,
+                        //     arguments: {'path': file.name ?? ''},
+                        //   );
+                        // } else {
+                        //   context.read<DownloadFileCubit>().downloadFile(
+                        //         id: file.id ?? '',
+                        //       );
+                        // }
                       },
                     ),
                   _ => const SliverToBoxAdapter(),

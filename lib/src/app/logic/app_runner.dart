@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:base_starter/src/app/presentation/widgets/app.dart';
 import 'package:base_starter/src/common/presentation/widgets/restart_wrapper.dart';
+import 'package:base_starter/src/common/utils/extensions/context_extension.dart';
 import 'package:base_starter/src/features/home/bloc/download_file/download_file_cubit.dart';
 import 'package:base_starter/src/features/home/bloc/font_categories/font_categories.dart';
 import 'package:base_starter/src/features/initialization/logic/composition_root.dart';
@@ -40,7 +41,9 @@ final class AppRunner {
             child: MultiBlocProvider(
               providers: [
                 BlocProvider(
-                  create: (context) => FontCategoriesCubit()..get(),
+                  create: (context) => FontCategoriesCubit(
+                    repository: context.repositories.driveRepository,
+                  )..get(),
                 ),
                 BlocProvider(
                   create: (context) => DownloadFileCubit(),

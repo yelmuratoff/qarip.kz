@@ -8,11 +8,17 @@ final class FetchFontFilesEvent extends FontFilesEvent with EquatableMixin {
   const FetchFontFilesEvent({
     required this.path,
     this.reset = false,
+    this.pageToken,
   });
 
   final String path;
+  final String? pageToken;
   final bool reset;
 
   @override
-  List<Object?> get props => [reset, path];
+  List<Object?> get props => [
+        reset,
+        path,
+        pageToken,
+      ];
 }

@@ -54,6 +54,7 @@
             "args": [
                 "-t",
                 "lib/main_dev.dart",
+                "--dart-define=Dart2jsOptions=--minify"
             ],
         },
         {
@@ -63,6 +64,7 @@
             "args": [
                 "-t",
                 "lib/main.dart",
+                "--dart-define=Dart2jsOptions=--minify"
             ],
         },
     ]

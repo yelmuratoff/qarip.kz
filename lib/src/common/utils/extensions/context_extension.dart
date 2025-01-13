@@ -1,4 +1,5 @@
 import 'package:base_starter/src/features/initialization/models/dependencies.dart';
+import 'package:base_starter/src/features/initialization/models/repositories.dart';
 import 'package:base_starter/src/features/initialization/presentation/dependencies_scope.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -110,6 +111,11 @@ extension ContextExtension on BuildContext {
   /// `dependencies` returns the nearest `DependenciesScope`
   /// of the given `BuildContext`.
   DependenciesContainer get dependencies => DependenciesScope.of(this);
+
+  /// `repositories` returns the nearest `DependenciesScope`
+  /// of the given `BuildContext`.
+  RepositoriesContainer get repositories =>
+      DependenciesScope.repositoriesOf(this);
 
   /// `provide` returns the nearest `Provider` of the given `BuildContext`.
   T provide<T>() => Provider.of<T>(this);

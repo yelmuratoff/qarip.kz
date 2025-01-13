@@ -1,24 +1,24 @@
-import 'package:base_starter/src/features/home/data/models/storage_file.dart';
+import 'package:base_starter/src/features/home/data/models/storage_folder.dart';
+import 'package:base_starter/src/features/home/domain/drive_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:ispect/ispect.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 part 'font_categories_state.dart';
 
 class FontCategoriesCubit extends Cubit<FontCategoriesState> {
-  FontCategoriesCubit() : super(const FontCategoriesInitial());
+  FontCategoriesCubit({
+    required IDriveRepository repository,
+  })  : _repository = repository,
+        super(const FontCategoriesInitial());
+
+  final IDriveRepository _repository;
 
   Future<void> get() async {
     emit(const FontCategoriesLoading());
     try {
-      final categories =
-          await Supabase.instance.client.storage.from('fonts').list();
-      emit(
-        FontCategoriesLoaded(
-          categories: categories.map(StorageFile.fromFileObject).toList(),
-        ),
-      );
+      final categories = await _repository.getCategories();
+      emit(FontCategoriesLoaded(categories: categories));
     } catch (e, st) {
       ISpect.handle(
         exception: e,

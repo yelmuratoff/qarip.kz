@@ -112,7 +112,7 @@ class _InitializationFailedAppState extends State<InitializationFailedApp> {
           child: ISpectScopeWrapper(
             isISpectEnabled: F.isDev,
             options: ISpectOptions(
-              locale: _settingsState?.locale ?? const Locale('en'),
+              locale: _settingsState?.locale ?? const Locale('kk'),
             ),
             child: MaterialApp(
               theme: _settingsState?.appTheme?.lightTheme,
@@ -135,7 +135,7 @@ class _InitializationFailedAppState extends State<InitializationFailedApp> {
                     _settingsState?.appTheme?.lightTheme ?? ThemeData.light(),
                 darkTheme:
                     _settingsState?.appTheme?.darkTheme ?? ThemeData.dark(),
-                locale: _settingsState?.locale ?? const Locale('en'),
+                locale: _settingsState?.locale ?? const Locale('kk'),
               ),
             ),
           ),

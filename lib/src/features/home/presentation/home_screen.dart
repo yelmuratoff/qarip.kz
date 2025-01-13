@@ -1,5 +1,6 @@
 import 'package:base_starter/src/app/router/routes/router.dart';
 import 'package:base_starter/src/app/router/widgets/route_wrapper.dart';
+import 'package:base_starter/src/common/constants/app_constants.dart';
 import 'package:base_starter/src/common/presentation/widgets/buttons/app_button.dart';
 import 'package:base_starter/src/common/presentation/widgets/dialogs/app_dialogs.dart';
 import 'package:base_starter/src/common/utils/extensions/context_extension.dart';
@@ -12,11 +13,13 @@ import 'package:base_starter/src/features/home/controllers/files_controller.dart
 import 'package:base_starter/src/features/home/presentation/widgets/app_bar.dart';
 import 'package:base_starter/src/features/home/presentation/widgets/categories_list.dart';
 import 'package:base_starter/src/features/home/presentation/widgets/files_sliver_list.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:octopus/octopus.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class HomeScreen extends StatefulWidget implements RouteWrapper {
   const HomeScreen({super.key});
@@ -227,23 +230,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SliverGap(16),
             //
-            // <--- Add New Font Button --->
-            //
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: SizedBox(
-                  height: 50,
-                  child: AppButton(
-                    onPressed: () {},
-                    text: L10n.current.addNewFont,
-                    textColor: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-            const SliverGap(32),
-            //
             // <--- Email For Suggestions And Questions --->
             //
             SliverPadding(
@@ -255,7 +241,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: context.textStyles.s20w500,
                     children: [
                       TextSpan(
-                        text: 'ylmuratovyelaman@gmail.com',
+                        text: AppConstants.emailUrl,
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            launchUrlString(
+                              'mailto:${AppConstants.emailUrl}',
+                            );
+                          },
                         style: context.textStyles.s24w700.copyWith(
                           color: context.theme.colorScheme.primary,
                         ),
@@ -280,7 +272,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: context.textStyles.s14w400,
                     children: [
                       TextSpan(
-                        text: 'https://vk.com/kazfont 💙',
+                        text: '${AppConstants.kazfontGroup} 💙',
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            launchUrlString(AppConstants.kazfontGroup);
+                          },
                         style: context.textStyles.s14w500.copyWith(
                           color: context.theme.colorScheme.primary,
                         ),

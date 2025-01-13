@@ -7,7 +7,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 /// Usage:
 /// Before using L10n.localizations, ensure to call L10n.load(locale).
 /// Example:
-/// L10n.load(Locale('en'));
+/// L10n.load(Locale('kk'));
 /// var myString = L10n.localizations.someTranslation;
 final class L10n {
   static AppLocalizations? _localizations;
@@ -19,7 +19,7 @@ final class L10n {
 
   /// Access localized strings directly
   static AppLocalizations get current =>
-      _localizations ?? lookupAppLocalizations(const Locale('en'));
+      _localizations ?? lookupAppLocalizations(const Locale('kk'));
 
   static LocalizationsDelegate<Object> get delegate =>
       AppLocalizations.delegate;
@@ -31,7 +31,7 @@ final class L10n {
 
     if (AppLocalizations.delegate.isSupported(locale)) return locale;
 
-    return const Locale('en');
+    return const Locale('kk');
   }
 
   static List<LocalizationsDelegate<dynamic>> get delegates => [

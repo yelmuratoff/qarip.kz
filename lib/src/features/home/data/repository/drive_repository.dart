@@ -1,9 +1,10 @@
 import 'dart:async';
 
+import 'package:base_starter/src/common/services/cache/cache_fonts.dart';
 import 'package:base_starter/src/features/home/data/models/pagination_files.dart';
 import 'package:base_starter/src/features/home/data/models/storage_folder.dart';
 import 'package:base_starter/src/features/home/domain/drive_repository.dart';
-import 'package:dynamic_cached_fonts/dynamic_cached_fonts.dart';
+
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 

@@ -32,7 +32,7 @@ class FontCategoriesList extends StatelessWidget {
             return Padding(
               padding: EdgeInsets.only(
                 left: index == 0 ? 16 : 0,
-                right: index == 9 ? 16 : 0,
+                right: index == categories.length - 1 ? 16 : 0,
               ),
               child: FontCategoryItem(
                 name: category.name ?? '',

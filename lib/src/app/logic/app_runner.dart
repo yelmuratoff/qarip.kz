@@ -11,6 +11,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart' as bloc_concurrency;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 
 /// A class which is responsible for initialization and running the app.
 final class AppRunner {
@@ -20,6 +21,10 @@ final class AppRunner {
   ) async {
     final binding = WidgetsFlutterBinding.ensureInitialized()
       ..deferFirstFrame();
+
+    // Use path url strategy
+    // Example: `/#/home` to `/home`
+    usePathUrlStrategy();
 
     // Preserve splash screen
     FlutterNativeSplash.preserve(widgetsBinding: binding);

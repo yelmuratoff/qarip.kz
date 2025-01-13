@@ -45,6 +45,11 @@ final class DriveRepository implements IDriveRepository {
       //   await fontLoader.load();
       // }
 
+      //     final byteData = ByteData.sublistView(fontBytes);
+      // final fontLoader = FontLoader(fontName)
+      // ..addFont(Future.value(byteData));
+      // await fontLoader.load();
+
       final fontCacheManager = FontCacheManager();
 
       for (final file in pagination.items) {

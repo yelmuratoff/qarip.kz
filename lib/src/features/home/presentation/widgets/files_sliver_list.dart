@@ -42,7 +42,7 @@ class FileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        height: 80,
+        height: 100,
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
           color: context.theme.colorScheme.surface,
@@ -67,7 +67,6 @@ class FileCard extends StatelessWidget {
               Radius.circular(16),
             ),
             child: SizedBox.square(
-              dimension: 150,
               child: Stack(
                 children: [
                   Align(
@@ -113,9 +112,20 @@ class FileCard extends StatelessWidget {
                             color: context.theme.colorScheme.onSurfaceVariant,
                           ),
                         ),
-                        if (!file.isFolder)
+                        if (!file.isFolder) ...[
                           Text(
                             'Қазақтың көркем тілі – ұлттың рухани қазынасы',
+                            textAlign: TextAlign.center,
+                            maxLines: 1,
+                            style: context.textStyles.s16w400.copyWith(
+                              fontFamily:
+                                  file.isFolder ? null : file.withoutExtension,
+                              color: context.theme.colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                          Text(
+                            'Qazaqtyñ körkem tılı – ūlttyñ ruhani qazynasy',
+                            maxLines: 1,
                             textAlign: TextAlign.center,
                             style: context.textStyles.s16w400.copyWith(
                               fontFamily:
@@ -123,6 +133,7 @@ class FileCard extends StatelessWidget {
                               color: context.theme.colorScheme.onSurfaceVariant,
                             ),
                           ),
+                        ],
                       ],
                     ),
                   ),
